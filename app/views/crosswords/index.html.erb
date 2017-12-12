@@ -1,0 +1,80 @@
+<style>
+  .tt-input {
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  }
+
+  .tt-hint {
+    color: #999;
+  }
+
+  .tt-menu {
+    width: 422px;
+    margin-top: 12px;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+  }
+
+  .tt-suggestion {
+    padding: 3px 20px;
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #0097cf;
+  }
+
+  .tt-suggestion p {
+    margin: 0;
+  }
+</style>
+
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-3">Test Searchkick Integration</h1>
+    <p class="lead">This is an attempt to see if searchkick will work for our needs.</p>
+  </div>
+</div>
+
+
+<div class="container">
+  <div class="row">
+    <% # search form %>
+    <div class="col-md-10">
+      <%= form_tag autocomplete_crosswords_path, method: :get do %>
+          <div class="form-group">
+            <%= label_tag 'Try Finding a Word:' %>
+            <%= text_field_tag "query", params[:query], class: 'form-control' %>
+          </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.js"
+integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+crossorigin="anonymous"></script>
+<%= javascript_include_tag "typeahead.bundle.js" %>
+<script>
+    var words = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url: '/crosswords/autocomplete?query=%QUERY',
+            wildcard: '%QUERY'
+        }
+    });
+    $('#query').typeahead(null, {
+        source: words
+    });
+    $('.tt-suggestion.tt-selectable').hover(function(){
+        $(this).css("background-color", "yellow");
+    }, function(){
+        $(this).css("background-color", "pink");
+    });
+</script>
